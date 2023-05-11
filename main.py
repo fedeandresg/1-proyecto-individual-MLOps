@@ -156,4 +156,4 @@ def retorno(pelicula):
 
     return {'pelicula':pelicula_nombre, 'inversion':inversion_pelicula, 'ganacia':ganancia_pelicula,'retorno':retorno_pelicula, 'anio':year_pelicula}
 
-#esto es una prueba
+
