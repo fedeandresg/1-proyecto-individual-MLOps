@@ -211,5 +211,4 @@ def recomendacion(titulo: str):
         movie_indices = [i[0] for i in sim_scores]
 
         # Devolvemos las 5 películas más similares
-        return {'recomendaciones': list(df1['title'].iloc[movie_indices])}
-    
+        return {'lista recomendada': df1['title'].iloc[movie_indices].tolist()}
