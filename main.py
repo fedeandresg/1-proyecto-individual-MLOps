@@ -212,3 +212,4 @@ def recomendacion(titulo: str):
 
         # Devolvemos las 5 películas más similares
         return {'recomendaciones': list(df1['title'].iloc[movie_indices])}
+    
