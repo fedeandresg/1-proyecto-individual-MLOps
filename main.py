@@ -1,10 +1,9 @@
 # Importamos las librerías
 import pandas as pd 
 import numpy as np
-import sklearn
+import joblib
 from fastapi import FastAPI
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.feature_extraction.text import HashingVectorizer
+
 
 # Indicamos título y descripción de la API
 app = FastAPI(title='PROYECTO INDIVIDUAL Nº1 -Machine Learning Operations (MLOps)',
@@ -12,7 +11,7 @@ app = FastAPI(title='PROYECTO INDIVIDUAL Nº1 -Machine Learning Operations (MLOp
 
 # Datasets
 df = pd.read_csv('movies_final.csv')
-df1 = pd.read_csv('movies_ml.csv')
+#df1 = pd.read_csv('movies_ml.csv')
 
 
 # Función para reconocer el servidor local
@@ -156,49 +155,23 @@ def retorno(pelicula):
 
 
 # Función de recomendación
-
-# Aseguramos que los datos de la columna 'overview' sean strings
-df1['overview'] = df1['overview'].fillna('').astype('str')
-
-# Aseguramos que los datos de la columna 'genres' sean strings
-df1['genres'] = df1['genres'].apply(lambda x: ' '.join(map(str, x)) if isinstance(x, list) else '')
-
-# Reemplazar los valores NaN con cadenas vacías en la columna 'production_companies'
-df1['production_companies'] = df1['production_companies'].fillna('')
-
-# Convertir la columna 'production_companies' a string si es necesario
-df1['production_companies'] = df1['production_companies'].apply(lambda x: ' '.join(map(str, x)) if isinstance(x, list) else x)
-
-# Crear una nueva columna combinando las características de interés
-df1['combined_features'] = df1['overview'] + ' ' + df1['genres'] + ' ' + df1['production_companies']
-
-# Convertimos todos los textos a minusculas para evitar duplicados
-df1['combined_features'] = df1['combined_features'].str.lower()
-
-# Inicializamos el HashingVectorizer
-hash_vectorizer = HashingVectorizer(stop_words='english', n_features=2000)
-
-# Transformamos los datos
-hash_matrix = hash_vectorizer.fit_transform(df1['combined_features'])
-
-# Calculamos la similitud del coseno
-cosine_sim = cosine_similarity(hash_matrix)
-
-# Creamos un índice con los títulos de las películas
-indices = pd.Series(df1.index, index=df1['title']).drop_duplicates()
-
+data_loaded = joblib.load('datos_recomendacion.joblib')
+df_highly_rated = data_loaded['df_highly_rated']
+indices = data_loaded['indices']
+cosine_sim = data_loaded['cosine_sim']
 
 @app.get("/recomendacion/{titulo}")
 def recomendacion(titulo: str):
     '''Ingresas un nombre de pelicula y te recomienda 5 similares
     '''
-    if titulo not in df1['title'].values:
-        return {'message': 'La película no se encuentra en el conjunto de datos de muestra.'}
+    if not df_highly_rated['title'].str.contains(titulo).any():
+        return 'La película no se encuentra en el conjunto de datos de muestra.'
     else:
-        # Obtenemos el índice de la película que coincide con el título
-        idx = indices[titulo]
+    # Obtenemos el índice de la película que coincide con el título
+        idx = indices.get(titulo)
 
         # Obtenemos las puntuaciones de similitud de todas las películas con la película dada
+        print(idx)
         sim_scores = list(enumerate(cosine_sim[idx]))
 
         # Ordenamos las películas en función de las puntuaciones de similitud
@@ -211,5 +184,7 @@ def recomendacion(titulo: str):
         movie_indices = [i[0] for i in sim_scores]
 
         # Devolvemos las 5 películas más similares
-        return {'recomendaciones': list(df1['title'].iloc[movie_indices])}
+        return {'recomendaciones': df_highly_rated['title'].iloc[movie_indices].tolist()}
     
+
+
