@@ -3,8 +3,8 @@ import pandas as pd
 import numpy as np
 import sklearn
 from fastapi import FastAPI
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.feature_extraction.text import HashingVectorizer
+from sklearn.feature_extraction.text import CountVectorizer 
+from sklearn.neighbors import NearestNeighbors
 
 # Indicamos título y descripción de la API
 app = FastAPI(title='PROYECTO INDIVIDUAL Nº1 -Machine Learning Operations (MLOps)',
@@ -13,7 +13,6 @@ app = FastAPI(title='PROYECTO INDIVIDUAL Nº1 -Machine Learning Operations (MLOp
 # Datasets
 df = pd.read_csv('movies_final.csv')
 df1 = pd.read_csv('movies_ml.csv')
-
 
 # Función para reconocer el servidor local
 
@@ -163,28 +162,28 @@ df1['overview'] = df1['overview'].fillna('').astype('str')
 # Aseguramos que los datos de la columna 'genres' sean strings
 df1['genres'] = df1['genres'].apply(lambda x: ' '.join(map(str, x)) if isinstance(x, list) else '')
 
-# Reemplazar los valores NaN con cadenas vacías en la columna 'production_companies'
+# Reemplazamos los valores NaN con cadenas vacías en la columna 'production_companies'
 df1['production_companies'] = df1['production_companies'].fillna('')
 
-# Convertir la columna 'production_companies' a string si es necesario
+# Convertimos la columna 'production_companies' a string si es necesario
 df1['production_companies'] = df1['production_companies'].apply(lambda x: ' '.join(map(str, x)) if isinstance(x, list) else x)
 
-# Crear una nueva columna combinando las características de interés
+# Creamos una nueva columna combinando las características de interés
 df1['combined_features'] = df1['overview'] + ' ' + df1['genres'] + ' ' + df1['production_companies']
 
 # Convertimos todos los textos a minusculas para evitar duplicados
 df1['combined_features'] = df1['combined_features'].str.lower()
 
-# Inicializamos el HashingVectorizer
-hash_vectorizer = HashingVectorizer(stop_words='english', n_features=2000)
+#  En esta matriz, cada fila representa una película y cada columna 
+#  Representa un termino en las caracteristicas combinadas
+cv = CountVectorizer(stop_words='english', max_features=5000)
+count_matrix = cv.fit_transform(df1['combined_features'])
 
-# Transformamos los datos
-hash_matrix = hash_vectorizer.fit_transform(df1['combined_features'])
+# Creamos un modelo para encontrar los vecinos mas cercanos en un espacio de caracterisicaa
+nn = NearestNeighbors(metric='cosine', algorithm='brute')
+nn.fit(count_matrix)
 
-# Calculamos la similitud del coseno
-cosine_sim = cosine_similarity(hash_matrix)
-
-# Creamos un índice con los títulos de las películas
+# Creamos un indice de titulos de peliculas y eliminamos los duplicados
 indices = pd.Series(df1.index, index=df1['title']).drop_duplicates()
 
 
@@ -192,23 +191,18 @@ indices = pd.Series(df1.index, index=df1['title']).drop_duplicates()
 def recomendacion(titulo: str):
     '''Ingresas un nombre de pelicula y te recomienda 5 similares
     '''
+    # Verificamos si el titulo ingresado se encuentra en el df
     if titulo not in df1['title'].values:
-        return {'message': 'La película no se encuentra en el conjunto de datos de muestra.'}
+        return 'La pelicula no se encuentra en el conjunto de la base de datos.'
     else:
         # Obtenemos el índice de la película que coincide con el título
-        idx = indices[titulo]
+        index = indices[titulo]
 
-        # Obtenemos las puntuaciones de similitud de todas las películas con la película dada
-        sim_scores = list(enumerate(cosine_sim[idx]))
+        # Obteme,ps las puntuaciones de similitud de las 5 peliculas más cercanas
+        distances, indices_knn = nn.kneighbors(count_matrix[index], n_neighbors=6)  
 
-        # Ordenamos las películas en función de las puntuaciones de similitud
-        sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+        # Obtenemos los indices de las peliculas
+        movie_indices = indices_knn[0][1:]  
 
-        # Obtenemos las puntuaciones de las 5 películas más similares
-        sim_scores = sim_scores[1:6]
-
-        # Obtenemos los índices de las películas
-        movie_indices = [i[0] for i in sim_scores]
-
-        # Devolvemos las 5 películas más similares
+        # Devolvemos las 5 peliculas mas similares
         return {'lista recomendada': df1['title'].iloc[movie_indices].tolist()}
