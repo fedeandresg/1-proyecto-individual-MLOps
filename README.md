@@ -59,7 +59,7 @@ Dentro de los análisis efectuados se encuentran distribuciones de frecuencias d
 Se destaca que se efectuaron algunas transformaciones diferentes a las realizadas para la sección de Engineering.
 
 Se pueden visualizar las transformaciones y los análisis realizados en el siguiente
-[archivo](https://github.com/fedeandresg/1-proyecto-individual-MLOps/blob/main/movies_EDA_ETL.ipynb)
+[archivo](https://github.com/fedeandresg/1-proyecto-individual-MLOps/blob/main/movies_EDA_ML.ipynb)
 
 ## Modelo de recomendación - Machine Learning
 
@@ -69,7 +69,7 @@ Se trabajó uniendo los textos de las columnas `overview`, `genres` y `productio
 Una vez con el dataframe listo se procedió a construir 2 modelos para efectuar recomendaciones de películas (uno basado en la similitud del coseno y otro basado en el algoritmo de K-Vecinos).
 
 Se pueden visualizar los códigos realizados en el siguiente
-[archivo](https://github.com/fedeandresg/1-proyecto-individual-MLOps/blob/main/movies_EDA_ETL.ipynb).
+[archivo](https://github.com/fedeandresg/1-proyecto-individual-MLOps/blob/main/movies_EDA_ML.ipynb).
 
 ## Deployment
 
