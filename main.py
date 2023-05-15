@@ -7,7 +7,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.neighbors import NearestNeighbors
 
 # Indicamos título y descripción de la API
-app = FastAPI(title='PROYECTO INDIVIDUAL Nº1 -Machine Learning Operations (MLOps)',
+app = FastAPI(title='PROYECTO INDIVIDUAL Nº1 -Machine Learning Operations (MLOps) -Federico Gómez DTS10',
             description='API de datos y recomendaciones de películas')
 
 # Datasets
@@ -29,8 +29,8 @@ async def about():
 
 @app.get('/peliculas_mes/({mes})')
 def peliculas_mes(mes:str):
-    '''Se ingresa el mes y la funcion retorna la cantidad de peliculas que se estrenaron ese mes 
-    (nombre del mes, en str, ejemplo 'enero') historicamente
+    '''Se ingresa el mes y la funcion retorna la cantidad de películas que se estrenaron ese mes 
+    (nombre del mes, en str, ejemplo 'enero') históricamente.
     ''' 
     mes = mes.lower()
     meses = {
@@ -69,8 +69,8 @@ def peliculas_mes(mes:str):
 
 @app.get('/peliculas_dia/({dia})')
 def peliculas_dia(dia:str):
-    '''Se ingresa el dia y la funcion retorna la cantidad de peliculas que se 
-    estrenaron ese dia (de la semana, en str, ejemplo 'lunes') historicamente
+    '''Se ingresa el día y la función retorna la cantidad de películas que se 
+    estrenaron ese día (de la semana, en str, ejemplo 'lunes') históricamente.
     '''
     # Creamos diccionario para normalizar
     days = {
@@ -94,7 +94,7 @@ def peliculas_dia(dia:str):
 
 @app.get('/franquicia/({franquicia})')
 def franquicia(franquicia:str):
-    '''Se ingresa la franquicia, retornando la cantidad de peliculas, ganancia total y promedio
+    '''Se ingresa la franquicia, retornando la cantidad de películas, ganancia total y promedio.
     ''' 
     # Filtramos el dataframe
     lista_peliculas_franquicia = df[(df['collection'] == franquicia)].drop_duplicates(subset='id')
@@ -112,7 +112,7 @@ def franquicia(franquicia:str):
 @app.get('/peliculas_pais/({pais})')
 def peliculas_pais(pais:str):
     '''
-    Ingresas el pais, retornando la cantidad de peliculas producidas en el mismo
+    Ingresas el país, retornando la cantidad de películas producidas en el mismo.
     '''
     # Filtramos el dataframe y contamos filas
     movies_filtered = df[(df['country'] == pais)]
@@ -125,7 +125,7 @@ def peliculas_pais(pais:str):
 
 @app.get('/productoras/({productora})')
 def productoras(productora:str):
-    '''Ingresas la productora, retornando la ganancia total y la cantidad de peliculas que produjeron
+    '''Ingresas la productora, retornando la ganancia total y la cantidad de películas que produjeron.
     ''' 
     # Filtramos el dataframe
     lista_peliculas_productoras = df[(df['company'] == productora)].drop_duplicates(subset='id')
@@ -141,7 +141,7 @@ def productoras(productora:str):
 
 @app.get('/retorno/({pelicula})')
 def retorno(pelicula):
-    '''Ingresas la pelicula, retornando la inversion, la ganancia, el retorno y el año en el que se lanzó
+    '''Ingresas la película, retornando la inversión, la ganancia, el retorno y el año en el que se lanzó.
     ''' 
     # Filtramos el dataframe y Calculamos
     info_pelicula = df[(df['title'] == pelicula)].drop_duplicates(subset='title')
@@ -174,12 +174,11 @@ df1['combined_features'] = df1['overview'] + ' ' + df1['genres'] + ' ' + df1['pr
 # Convertimos todos los textos a minusculas para evitar duplicados
 df1['combined_features'] = df1['combined_features'].str.lower()
 
-#  En esta matriz, cada fila representa una película y cada columna 
-#  Representa un termino en las caracteristicas combinadas
+#   Creamos una matriz de conteo usando CountVectorizer que convierte los textos en una matriz de frecuencias de palabras
 cv = CountVectorizer(stop_words='english', max_features=5000)
 count_matrix = cv.fit_transform(df1['combined_features'])
 
-# Creamos un modelo para encontrar los vecinos mas cercanos en un espacio de caracterisicaa
+# Creamos un modelo para encontrar los vecinos mas cercanos en un espacio de caracteristicas
 nn = NearestNeighbors(metric='cosine', algorithm='brute')
 nn.fit(count_matrix)
 
@@ -189,7 +188,7 @@ indices = pd.Series(df1.index, index=df1['title']).drop_duplicates()
 
 @app.get("/recomendacion/{titulo}")
 def recomendacion(titulo: str):
-    '''Ingresas un nombre de pelicula y te recomienda 5 similares
+    '''Ingresas un nombre de película y te recomienda 5 similares
     '''
     # Verificamos si el titulo ingresado se encuentra en el df
     if titulo not in df1['title'].values:
@@ -198,7 +197,7 @@ def recomendacion(titulo: str):
         # Obtenemos el índice de la película que coincide con el título
         index = indices[titulo]
 
-        # Obteme,ps las puntuaciones de similitud de las 5 peliculas más cercanas
+        # Obtenemos las puntuaciones de similitud de las 5 peliculas más cercanas
         distances, indices_knn = nn.kneighbors(count_matrix[index], n_neighbors=6)  
 
         # Obtenemos los indices de las peliculas
