@@ -69,7 +69,7 @@ Se trabajó uniendo los textos de las columnas `overview`, `genres` y `productio
 Una vez con el dataframe listo se procedió a construir 2 modelos para efectuar recomendaciones de películas (uno basado en la similitud del coseno y otro basado en el algoritmo de K-Vecinos).
 
 Se pueden visualizar los códigos realizados en el siguiente
-[archivo](https://github.com/fedeandresg/1-proyecto-individual-MLOps/blob/main/movies_EDA_ML.ipynb).
+[archivo](https://github.com/fedeandresg/1-proyecto-individual-MLOps/blob/main/movies_EDA_ML.ipynb)
 
 ## Deployment
 
@@ -80,4 +80,4 @@ Los datos están listos para ser consumidos y consultados a partir del siguiente
 
 ## Video 
 
-Para consultar sobre los pasos del proceso y una explicación más profunda es posible acceder al siguiente [enlace]()
+Para consultar sobre los pasos del proceso y una explicación más profunda es posible acceder al siguiente [enlace](https://drive.google.com/file/d/1kBU6kzLeiHwYWEY8Lq9puuHoVMvz1A5D/view?usp=sharing)
