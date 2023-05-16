@@ -1,6 +1,6 @@
 ![Logo](https://blog.soyhenry.com/content/images/2021/02/HEADER-BLOG-NEGRO-01.jpg)
 
-# PROYECTO INDIVIDUAL Nº1
+# DATA SCIENCE - PROYECTO INDIVIDUAL Nº1
 # Machine Learning Operations (MLOps)
 
 Este proyecto abarca una serie de pasos para desarrollar un proceso de **`Data Engineering`** sobre un dataset de películas, para posteriormente disponibilizar una serie de endpoints y un modelo de recomendación de películas utilizando **`Machine Learning`**, a través de una **`API`**.
