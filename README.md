@@ -51,6 +51,8 @@ Se solicitó efectuar la disponibilización de los siguientes endpoints a travé
 
 - def retorno(pelicula): '''Ingresas la pelicula, retornando la inversion, la ganancia, el retorno y el año en el que se lanzo''' return {'pelicula':pelicula, 'inversion':respuesta, 'ganacia':respuesta,'retorno':respuesta, 'anio':respuesta}
 
+El código para correr la API dentro de FastAPI se puede visualizar [aquí](https://github.com/fedeandresg/1-proyecto-individual-MLOps/blob/main/main.py) 
+
 ## Análisis exploratorio de datos
 
 A los efectos de poder entender los datos presentados, se realizaron una serie de análisis y estudios sobre las variables del dataset a los efectos de poder encontrar relaciones entre los datos y comprender la relevancia de los mismos.
