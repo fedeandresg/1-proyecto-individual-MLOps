@@ -82,4 +82,4 @@ Los datos están listos para ser consumidos y consultados a partir del siguiente
 
 ## Video 
 
-Para consultar sobre los pasos del proceso y una explicación más profunda es posible acceder al siguiente [enlace](https://drive.google.com/file/d/1kBU6kzLeiHwYWEY8Lq9puuHoVMvz1A5D/view?usp=sharing)
+Para consultar sobre los pasos del proceso y una explicación más profunda es posible acceder al siguiente [enlace](https://www.youtube.com/watch?v=7rNNCXf-Bh4)
